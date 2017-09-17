@@ -3,5 +3,20 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  p url: #{url}
-  p tiny: #{tiny}
+  form(
+    action="/"
+    method="get"
+  )
+    fieldset
+      p url:
+      input(
+        type='url'
+        value=url
+        name='url'
+      )
+      input(
+        type='submit'
+        value='Submit'
+      )
+      if tiny
+        h2 tiny: #{tiny}
