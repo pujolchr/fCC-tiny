@@ -8,7 +8,7 @@ block content
     method="get"
   )
     fieldset
-      p url:
+      h2 url:
       input(
         type='url'
         value=url
@@ -19,4 +19,6 @@ block content
         value='Submit'
       )
       if tiny
-        h2 tiny: #{tiny}
+          h2 tiny: 
+          h1 
+            a(href=tiny) #{tiny}

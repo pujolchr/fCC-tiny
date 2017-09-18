@@ -1,16 +1,42 @@
 const express = require('express');
+const shortid = require('shortid');
+const mongo = require('mongodb').MongoClient;
+const cfg = require('../config/config').db;
 
 const router = express.Router();
 
-/* GET users listing. */
-router.get('/:id', (req, res, next) => {
-  const obj = {};
+
+/* GET {url, tiny_url} */
+router.get('/:url', (req, res) => {
   // check if id is a valid url
-  // check if we already got it
-  // build or retrive the tiny part
-  obj.url = 'http://www.naga.no';
-  obj.tiny = 'http://tiny/1';
-  res.send(obj);
+
+  const url = `mongodb://${cfg.url}:${cfg.port}/${cfg.path}`;
+  mongo.connect(url, (err, db) => {
+    const collection = db.collection('tiny');
+    collection.findAndModify(
+      {
+        url: req.params.url,
+      },
+      [['_id', 'asc']],
+      {
+        $setOnInsert: {
+          url: req.params.url,
+          tiny: shortid.generate(),
+        },
+      }, {
+        new: true,
+        upsert: true,
+      }, (e, docs) => {
+        if (e) {
+          res.send(e);
+          db.close();
+        } else {
+          res.send(docs.value);
+          db.close();
+        }
+      } // eslint-disable-line comma-dangle
+    );
+  });
 });
 
 module.exports = router;
