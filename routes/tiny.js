@@ -2,6 +2,7 @@ const express = require('express');
 const shortid = require('shortid');
 const mongo = require('mongodb').MongoClient;
 const cfg = require('../config/config').db;
+const mlab = require('../config/config').mlab;
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const router = express.Router();
 router.get('/:url', (req, res) => {
   // check if id is a valid url
 
-  const url = `mongodb://${cfg.url}:${cfg.port}/${cfg.path}`;
+  const url = mlab;
   mongo.connect(url, (err, db) => {
     const collection = db.collection('tiny');
     collection.findAndModify(

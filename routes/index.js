@@ -3,6 +3,7 @@
 const express = require('express');
 const http = require('http');
 const server = require('../config/config').server;
+const mlab = require('../config/config').mlab;
 const mongo = require('mongodb').MongoClient;
 
 const router = express.Router();
@@ -46,7 +47,7 @@ router.get('/', (req, res) => {
 router.get('/:tiny', (req, res) => {
   const tiny = req.params.tiny;
 
-  mongo.connect('mongodb://localhost:27018/db', (err, db) => {
+  mongo.connect(mlab,  (err, db) => {
     const collection = db.collection('tiny');
     collection.findOne({ tiny }, (e, doc) => {
       res.redirect(doc.url);
