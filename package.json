@@ -14,7 +14,8 @@
     "morgan": "~1.8.1",
     "pug": "~2.0.0-beta11",
     "serve-favicon": "~2.4.2",
-    "shortid": "^2.2.8"
+    "shortid": "^2.2.8",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "eslint": "^4.7.0",

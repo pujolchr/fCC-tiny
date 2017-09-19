@@ -1,4 +1,5 @@
 db/
+config/secret.js
 .npm-debug.log
 node_modules/
 *~

@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
     // get the tiny form
     source = encodeURI(source);
     source = source.replace(/\//g, '%2F');
-    http.get(`${server.url}:${server.port}/tiny/${source}`, (r) => {
+    http.get(`${server.url}/tiny/${source}`, (r) => {
       let output = '';
       r.on('error', (err) => {
         obj.tiny = err;
@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
       });
       r.on('end', () => {
         output = JSON.parse(output);
-        obj.tiny = `${server.url}:${server.port}/${output.tiny}`;
+        obj.tiny = `${server.url}/${output.tiny}`;
         res.render('index', obj);
       });
     });
@@ -44,12 +44,14 @@ router.get('/', (req, res) => {
   }
 });
 
-router.get('/:tiny', (req, res) => {
+router.get('/:tiny', (req, res, next) => {
   const tiny = req.params.tiny;
 
-  mongo.connect(mlab,  (err, db) => {
+  mongo.connect(mlab, (err, db) => {
+    if (err) return next(err);
     const collection = db.collection('tiny');
     collection.findOne({ tiny }, (e, doc) => {
+      if (e) return next(e);
       res.redirect(doc.url);
       db.close();
     });
