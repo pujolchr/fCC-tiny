@@ -1,5 +1,6 @@
 'use strict';
 
+const shortid = require('shortid');
 const express = require('express');
 const http = require('http');
 const server = require('../config/config').server;
@@ -47,11 +48,14 @@ router.get('/', (req, res) => {
 router.get('/:tiny', (req, res, next) => {
   const tiny = req.params.tiny;
 
+  if (!shortid.isValid(tiny)) return next();
+
   mongo.connect(mlab, (err, db) => {
     if (err) return next(err);
     const collection = db.collection('tiny');
     collection.findOne({ tiny }, (e, doc) => {
       if (e) return next(e);
+      if (!doc) return next();
       res.redirect(doc.url);
       db.close();
     });
