@@ -7,6 +7,9 @@ const server = require('../config/config').server;
 const mlab = require('../config/config').mlab;
 const mongo = require('mongodb').MongoClient;
 
+const err404 = new Error('Not Found');
+err404.status = 404;
+
 const router = express.Router();
 
 /* GET home page. */
@@ -48,14 +51,14 @@ router.get('/', (req, res) => {
 router.get('/:tiny', (req, res, next) => {
   const tiny = req.params.tiny;
 
-  if (!shortid.isValid(tiny)) return next();
+  if (!shortid.isValid(tiny)) return next(err404);
 
   mongo.connect(mlab, (err, db) => {
     if (err) return next(err);
     const collection = db.collection('tiny');
     collection.findOne({ tiny }, (e, doc) => {
       if (e) return next(e);
-      if (!doc) return next();
+      if (!doc) return next(err404);
       res.redirect(doc.url);
       db.close();
     });
