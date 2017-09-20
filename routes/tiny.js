@@ -29,15 +29,13 @@ router.get('/:url', (req, res, next) => {
           upsert: true,
         }, (e, docs) => {
           if (e) return next(e);
-          const output = docs.value;
-          output.tiny = `${cfg.server}/${docs.value.tiny}`;
-          res.send(output);
+          res.send(docs.value);
           db.close();
         } // eslint-disable-line comma-dangle
       );
     });
   } else {
-    res.send({ error: 'Unable to find URL to redirect to.' });
+    res.send({ error: 'invalid URL' });
   }
 });
 
