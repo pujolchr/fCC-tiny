@@ -1,14 +1,13 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 FreeCodeCamp API Projects: URL Shortener Microservice
   form(
     action="/"
     method="get"
   )
     fieldset
-      h2 url:
+      h3 url:
       input(
         type='url'
         value=url
@@ -18,7 +17,25 @@ block content
         type='submit'
         value='Submit'
       )
+      h3 tiny: 
       if tiny
-          h2 tiny: 
           h1 
             a(href=tiny) #{tiny}
+  h2 Exemple creation usage:
+  pre
+    code #{server + '/tiny/http\%3A\%2F%2Fnaga.no'}
+  br
+  h2 Example creation output
+  pre
+    code #{'{ "url": "http://naga.no", "tiny": "' + server +'/S1EJFNgsb" }'}
+  br
+  h2 Usage:
+  pre
+    code #{server +'/S1EJFNgsb'}
+  br
+  h2 Will redirect to:
+  pre
+    code #{'http://naga.no'}
+
+
+

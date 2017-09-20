@@ -22,6 +22,7 @@ router.get('/', (req, res) => {
     title: 'fCC-tiny',
     author: 'Christan Pujol',
     url: source,
+    server: cfg.server,
   };
   if (source) {
     // get the tiny form
@@ -37,7 +38,7 @@ router.get('/', (req, res) => {
       });
       r.on('end', () => {
         output = JSON.parse(output);
-        obj.tiny = `${cfg.server}/${output.tiny}`;
+        obj.tiny = output.tiny;
         res.render('index', obj);
       });
     });

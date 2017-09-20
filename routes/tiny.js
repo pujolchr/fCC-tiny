@@ -27,9 +27,13 @@ router.get('/:url', (req, res, next) => {
         }, {
           new: true,
           upsert: true,
+          fields: {
+            _id: 0,
+          },
         }, (e, docs) => {
           if (e) return next(e);
-          const output = docs.value;
+          const output = {};
+          output.url = docs.value.url;
           output.tiny = `${cfg.server}/${docs.value.tiny}`;
           res.send(output);
           db.close();
