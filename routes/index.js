@@ -3,8 +3,7 @@
 const shortid = require('shortid');
 const express = require('express');
 const http = require('http');
-const server = require('../config/config').server;
-const mlab = require('../config/config').mlab;
+const cfg = require('../config/config');
 const mongo = require('mongodb').MongoClient;
 
 const err404 = new Error('Not Found');
@@ -26,9 +25,8 @@ router.get('/', (req, res) => {
   };
   if (source) {
     // get the tiny form
-    source = encodeURI(source);
-    source = source.replace(/\//g, '%2F');
-    http.get(`${server.url}/tiny/${source}`, (r) => {
+    source = encodeURIComponent(source);
+    http.get(`${cfg.server}/tiny/${source}`, (r) => {
       let output = '';
       r.on('error', (err) => {
         obj.tiny = err;
@@ -39,7 +37,7 @@ router.get('/', (req, res) => {
       });
       r.on('end', () => {
         output = JSON.parse(output);
-        obj.tiny = `${server.url}/${output.tiny}`;
+        obj.tiny = `${cfg.server}/${output.tiny}`;
         res.render('index', obj);
       });
     });
@@ -53,9 +51,9 @@ router.get('/:tiny', (req, res, next) => {
 
   if (!shortid.isValid(tiny)) return next(err404);
 
-  mongo.connect(mlab, (err, db) => {
+  mongo.connect(cfg.mlab, (err, db) => {
     if (err) return next(err);
-    const collection = db.collection('tiny');
+    const collection = db.collection(cfg.collection);
     collection.findOne({ tiny }, (e, doc) => {
       if (e) return next(e);
       if (!doc) return next(err404);

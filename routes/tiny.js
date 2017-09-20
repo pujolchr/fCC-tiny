@@ -1,7 +1,7 @@
 const express = require('express');
 const shortid = require('shortid');
 const mongo = require('mongodb').MongoClient;
-const mlab = require('../config/config').mlab;
+const cfg = require('../config/config');
 const isWebUri = require('valid-url').isWebUri;
 
 const router = express.Router();
@@ -11,9 +11,9 @@ const router = express.Router();
 router.get('/:url', (req, res, next) => {
   const urlOrigin = req.params.url;
   if (isWebUri(urlOrigin)) {
-    mongo.connect(mlab, (err, db) => {
+    mongo.connect(cfg.mlab, (err, db) => {
       if (err) return next(err);
-      const collection = db.collection('tiny');
+      const collection = db.collection(cfg.collection);
       collection.findAndModify(
         {
           url: { $eq: urlOrigin },
